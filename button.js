@@ -1,18 +1,23 @@
 //----------------------------------------------------------------------------//
 // Define Template Markup and Styles for Component
 //----------------------------------------------------------------------------//
-const template = document.createElement('template');
+var template = document.createElement('template');
 
+// template.innerHTML = `
+// <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+// <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+// <a class="btn" href="#" role="button">
+//     <div class="button-content d-flex align-items-center justify-content-center"></div>
+// </a>
+
+
+// `
 template.innerHTML = `
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 <a class="btn" href="#" role="button">
     <div class="button-content d-flex align-items-center justify-content-center"></div>
 </a>
-
-
-`
+`;
 
 //----------------------------------------------------------------------------//
 //  Define Custom Component and its Functionality
@@ -23,6 +28,26 @@ class BootstrapButton extends HTMLElement {
         super();
         // Attach Shadow DOM to component
         this.attachShadow({mode: 'open'})
+
+        //inject more css
+        if (this.hasAttribute('css')) {
+            //template.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">';
+            let cssArr = this.getAttribute('css');
+            if(cssArr.trim() != '') {
+                cssArr = JSON.parse(cssArr);
+                console.log('cssArr:', cssArr, cssArr.length);
+                cssArr.forEach(css => {
+                    template.innerHTML += '<link rel="stylesheet" href="' + css + '">';
+                });
+                
+            }
+           
+        } else {
+            template.innerHTML += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />`;
+        }
+
+
         
         // Add template markup to Shadow DOM
         this.shadowRoot.appendChild(template.content.cloneNode(true));
@@ -86,9 +111,9 @@ class BootstrapButton extends HTMLElement {
             // Set icon location of the icon within the button (start or end)
             if (this.hasAttribute('icon-position-reverse') ) {
                 buttonContent.classList.add('flex-row-reverse');
-                buttonIconContainer.classList.add('mr-3');
+                buttonIconContainer.classList.add('me-3');
             } else {
-                buttonIconContainer.classList.add('ml-3');
+                buttonIconContainer.classList.add('ms-3');
             }
             // Add icon size modifier classes if defined
             if (this.hasAttribute('icon-size')) {
